@@ -1,0 +1,25 @@
+# datasets & artifacts — never commit
+datasets/
+data/
+*.pcap
+*.pcapng
+*.npz
+*.parquet
+models/artifacts/
+models.tar.gz
+
+# env / tooling
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+__pycache__/
+
+# OS noise
+*.Zone.Identifier
+.DS_Store
+*.Zone.Identifier
+replay/logs/
+
+# Agent Context File
+agent.md

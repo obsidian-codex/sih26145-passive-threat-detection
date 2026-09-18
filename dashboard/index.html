@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIH26145 // DIODE-IDS OPERATOR CONSOLE</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://127.0.0.1:8200 ws://127.0.0.1:8200;">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- ═══ MASTHEAD ═══════════════════════════════════════════════════════ -->
+  <header class="masthead">
+    <div class="mast-l">
+      <h1>THREAT<br>DETECTION</h1>
+      <p class="mast-sub">AI DETECTION OF CYBER THREATS IN UNIDIRECTIONAL IP TRAFFIC</p>
+    </div>
+    <dl class="mast-meta">
+      <div><dt>PROBLEM</dt><dd>SIH26145</dd></div>
+      <div><dt>ORG</dt><dd>NTRO</dd></div>
+      <div><dt>DETECTOR</dt><dd>XGB + LSTM&#8209;AE</dd></div>
+      <div><dt>LINK</dt><dd>SIMPLEX / FWD&#8209;ONLY</dd></div>
+      <div><dt>UPTIME</dt><dd><output id="m-uptime">--</output></dd></div>
+      <div><dt>UTC</dt><dd><output id="m-clock">--:--:--</output></dd></div>
+    </dl>
+    <div class="mast-link">
+      <span id="link-dot" class="dot"></span>
+      <samp id="link-text">CONNECTING</samp>
+    </div>
+  </header>
+
+  <!-- ═══ NAVIGATION ═════════════════════════════════════════════════════ -->
+  <nav class="dash-nav">
+    <a href="#telemetry" class="nav-btn active">TELEMETRY</a>
+    <a href="#alerts" class="nav-btn">ALERT FEED</a>
+    <a href="#diagnostics" class="nav-btn">DIAGNOSTICS</a>
+  </nav>
+
+  <div id="view-diagnostics" class="route-view" style="display: none;">
+  <!-- ═══ DIODE INTEGRITY ════════════════════════════════════════════════ -->
+  <section class="diode" aria-label="Data diode integrity">
+    <div class="diode-title"><span>[ DATA DIODE INTEGRITY ]</span><span id="diode-verdict" class="pill">CHECKING</span></div>
+    <div class="chain">
+      <div class="hop"><b>NS&#8209;SOURCE</b><samp>10.200.0.1</samp><em>replay / tap</em></div>
+      <div class="flow"><span class="fwd">&#9552;&#9552;&#9552;&#9656;</span><samp>FORWARD</samp></div>
+      <div class="hop hop-diode">
+        <b>DIODE</b><samp>veth + iptables DROP</samp><em>one&#8209;way relay</em>
+        <div class="rev"><span>&#9666;&#9552;&#9552;&#9552;</span><samp>NO RETURN PATH</samp></div>
+      </div>
+      <div class="flow"><span class="fwd">&#9552;&#9552;&#9552;&#9656;</span><samp>FORWARD</samp></div>
+      <div class="hop"><b>NS&#8209;MONITOR</b><samp>10.200.0.2</samp><em>recvfrom() only</em></div>
+      <div class="flow"><span class="fwd">&#9472;&#9472;&#9656;</span><samp>WINDOW</samp></div>
+      <div class="hop"><b>EXTRACTOR</b><samp id="d-featcount">-- FEATURES</samp><em>forward&#8209;only</em></div>
+      <div class="flow"><span class="fwd">&#9472;&#9472;&#9656;</span><samp>FUSE</samp></div>
+      <div class="hop"><b>FUSION</b><samp>KNOWN + NOVEL</samp><em>threat index</em></div>
+    </div>
+    <p class="diode-note">
+      NO <code>bwd_*</code> FEATURE EXISTS BY CONSTRUCTION &#8212; THE REVERSE DIRECTION IS
+      NOT FILTERED, IT IS ABSENT. <span id="diode-proof">PROOF: PENDING</span>
+    </p>
+  </section>
+  </div>
+
+  <div id="view-telemetry" class="route-view active">
+  <!-- ═══ PRIMARY TELEMETRY ══════════════════════════════════════════════ -->
+  <section class="primary">
+
+    <!-- threat index -->
+    <article class="panel panel-index">
+      <h2>[ THREAT INDEX ]</h2>
+      <div class="idx-body">
+        <output id="idx-value" class="idx-num">0.00</output>
+        <div class="idx-side">
+          <span id="idx-verdict" class="verdict">STANDBY</span>
+          <samp id="idx-family" class="idx-family">NO TRAFFIC</samp>
+        </div>
+      </div>
+      <div class="bands" aria-hidden="true">
+        <span data-band="OK">OK</span><span data-band="MEDIUM">MED</span>
+        <span data-band="HIGH">HIGH</span><span data-band="CRITICAL">CRIT</span>
+        <i id="band-marker"></i>
+      </div>
+      <dl class="components">
+        <div><dt>CLASSIFIER &#8212; KNOWN ATTACK FAMILIES</dt>
+          <dd><span class="meter"><i id="c-clf"></i></span><output id="v-clf">0.000</output></dd></div>
+        <div><dt>AUTOENCODER &#8212; NOVEL / ZERO&#8209;DAY</dt>
+          <dd><span class="meter"><i id="c-ae"></i></span><output id="v-ae">0.000</output></dd></div>
+      </dl>
+    </article>
+
+    <!-- timeline -->
+    <article class="panel panel-trend">
+      <h2>[ THREAT INDEX &#8212; LAST 120 WINDOWS ]</h2>
+      <svg id="trend" class="trend" viewBox="0 0 600 190" preserveAspectRatio="none" role="img"
+           aria-label="Threat index over recent scoring windows"></svg>
+      <div class="trend-legend">
+        <samp><i class="sw sw-crit"></i>&#8805;0.75 CRITICAL</samp>
+        <samp><i class="sw sw-high"></i>&#8805;0.50 HIGH</samp>
+        <samp><i class="sw sw-med"></i>&#8805;0.25 MEDIUM</samp>
+        <samp><i class="sw sw-ok"></i>&lt;0.25 OK</samp>
+      </div>
+    </article>
+
+    <!-- class posterior -->
+    <article class="panel panel-classes">
+      <h2>[ CLASS POSTERIOR ]</h2>
+      <div id="classbars" class="classbars"><p class="empty">AWAITING FIRST WINDOW</p></div>
+    </article>
+  </section>
+
+  <!-- ═══ STAT STRIP ═════════════════════════════════════════════════════ -->
+  <section class="stats" aria-label="Runtime statistics">
+    <div class="stat"><dt>WINDOWS SCORED</dt><dd><output id="s-scored">0</output></dd></div>
+    <div class="stat"><dt>ALERTS RAISED</dt><dd><output id="s-alerts">0</output></dd></div>
+    <div class="stat"><dt>LATENCY AVG</dt><dd><output id="s-lat">--</output><small>MS</small></dd></div>
+    <div class="stat"><dt>LATENCY P95</dt><dd><output id="s-p95">--</output><small>MS</small></dd></div>
+    <div class="stat"><dt>CLASSIFIER</dt><dd><output id="s-clf">--</output></dd></div>
+    <div class="stat"><dt>AUTOENCODER</dt><dd><output id="s-ae">--</output></dd></div>
+    <div class="stat"><dt>COMPUTE</dt><dd><output id="s-dev">--</output></dd></div>
+    <div class="stat"><dt>MACRO F1</dt><dd><output id="s-f1">--</output></dd></div>
+  </section>
+  </div>
+
+  <div id="view-alerts" class="route-view" style="display: none;">
+  <!-- ═══ FEED + FAMILIES ════════════════════════════════════════════════ -->
+  <section class="lower">
+    <article class="panel panel-feed">
+      <h2>[ ALERT FEED ] <small>NEWEST FIRST</small>
+        <button id="btn-refresh" type="button">&#8635; REFRESH</button>
+        <button id="btn-pause" type="button" aria-pressed="false">&#10073;&#10073; HOLD</button>
+        <button id="btn-test-attack" type="button" title="Send a synthetic attack window to the scoring API">&#9889; TEST ATTACK</button>
+      </h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr>
+            <th>UTC</th><th>VERDICT</th><th>IDX</th><th>FAMILY</th>
+            <th>AE ERR</th><th>EVIDENCE</th><th>MS</th>
+          </tr></thead>
+          <tbody id="feed">
+            <tr class="empty-row"><td colspan="7">&gt;&gt;&gt; NO ALERTS &#8212; MONITORING</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <article class="panel panel-fam">
+      <h2>[ ATTACK FAMILIES SEEN ]</h2>
+      <div id="families" class="families"><p class="empty">NONE</p></div>
+      <h2 class="sub">[ TOP DISCRIMINATIVE FEATURES ]</h2>
+      <ol id="topfeat" class="topfeat"><li class="empty">NOT AVAILABLE</li></ol>
+    </article>
+  </section>
+  </div>
+
+  <footer class="foot">
+    <samp>SIH26145 &#8212; NTRO &#8212; FORWARD-ONLY DETECTION&#8482;</samp>
+    <samp id="foot-src">API 127.0.0.1:8200</samp>
+    <samp>REV 2.0 / UNIT D&#8209;01 &#169;</samp>
+  </footer>
+</div>
+
+<script src="app.js?v=2"></script>
+</body>
+</html>

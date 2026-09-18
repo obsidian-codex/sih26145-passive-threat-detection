@@ -1,0 +1,15 @@
+{
+  "n": 500,
+  "device": "cuda",
+  "mean_ms": 4.532,
+  "p50_ms": 4.5,
+  "p95_ms": 5.967,
+  "p99_ms": 8.147,
+  "max_ms": 10.318,
+  "breakdown": {
+    "classifier": 3.948,
+    "autoencoder": 0.569,
+    "fusion": 0.015
+  },
+  "note": "in-process detector path; excludes HTTP transport"
+}
